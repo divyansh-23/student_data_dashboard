@@ -45,6 +45,11 @@ server = app.server
 
 app.layout = html.Div([
     html.H1('Student Performance Dashboard', style={'textAlign': 'center'}),
+    html.H2('Please hover over any graph bar to see the performance insights', style={'textAlign': 'center'}),
+    html.H2('Please choose any drill-down categories from the right-side dropdown to see the grade distribution for any overview category of the first dropdown', style={'textAlign': 'center'}),
+    html.H3('Please select/unselect a legend on the right of the graph to select the categories to display', style={'textAlign': 'center', 'color': 'red'}),
+    html.H3('Double-click on legend displayed on the right of the graph to isolate the trace.', style={'textAlign': 'center', 'color': 'blue'}),
+    html.H3('Use the zoom-in by selecting a portion of any graph and zoom-out by double-clicking on the graph.', style={'textAlign': 'center', 'color': 'green'}),
 
     # Container for dropdowns
     html.Div([
@@ -58,7 +63,6 @@ app.layout = html.Div([
                     {'label': 'COVID Impact', 'value': 'COVID Impact'},
                     {'label': 'First Generation', 'value': 'First Generation'},
                     {'label': 'Gender', 'value': 'Gender'},
-                    # Corrected option label
                     {'label': 'Race/Ethnicity', 'value': 'Race/Ethnicity'},
                     {'label': 'Semester', 'value': 'Semester'},
                 ],
@@ -148,7 +152,8 @@ def update_graph(primary_selection, secondary_selection):
                  text='Count')  # Use hover_text for hover information
 
     fig.update_layout(plot_bgcolor='white',
-                      paper_bgcolor='white', height=total_height)
+                      paper_bgcolor='white', height=total_height, title_font_color='blue', title_font_size=30, title_font_family="Balto")
+
     fig.update_xaxes(matches=None, showticklabels=True)
     return fig
 
