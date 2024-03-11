@@ -41,6 +41,7 @@ df['Course'] = df['Course'].str.upper()
 
 # Initialize Dash app
 app = Dash(__name__)
+server = app.server
 
 app.layout = html.Div([
     html.H1('Student Performance Dashboard', style={'textAlign': 'center'}),
@@ -151,6 +152,6 @@ def update_graph(primary_selection, secondary_selection):
     fig.update_xaxes(matches=None, showticklabels=True)
     return fig
 
-
+# After initializing your Dash app
 if __name__ == '__main__':
     app.run_server(debug=True)
