@@ -1,3 +1,4 @@
+# libraries to be imported
 import plotly.express as px
 import pandas as pd
 import numpy as np
@@ -5,8 +6,8 @@ import dash
 from dash import Dash, dcc, html, Input, Output
 from dash.exceptions import PreventUpdate
 
-# Path to your data file
-file_path = 'data/data_sim_updated.csv'  # Adjust this to the path of your dataset file
+# Path to the data file
+file_path = 'data/data_sim_updated.csv'
 
 # Load the dataset into a Pandas DataFrame
 df = pd.read_csv(file_path)
@@ -43,19 +44,26 @@ df['Course'] = df['Course'].str.upper()
 app = Dash(__name__)
 server = app.server
 
+# Define the layout of the app and app use guide
 app.layout = html.Div([
     html.H1('Student Performance Dashboard', style={'textAlign': 'center'}),
-    html.H2('Please hover over any graph bar to see the performance insights', style={'textAlign': 'center'}),
-    html.H2('Please choose any drill-down categories from the right-side dropdown to see the grade distribution for any overview category of the first dropdown', style={'textAlign': 'center'}),
-    html.H3('Please select/unselect a legend on the right of the graph to select the categories to display', style={'textAlign': 'center', 'color': 'red'}),
-    html.H3('Double-click on legend displayed on the right of the graph to isolate the trace.', style={'textAlign': 'center', 'color': 'blue'}),
-    html.H3('Use the zoom-in by selecting a portion of any graph and zoom-out by double-clicking on the graph.', style={'textAlign': 'center', 'color': 'green'}),
+    html.H2('Please hover over any graph bar to see the performance insights', style={
+            'textAlign': 'center', 'color': 'orange'}),
+    html.H2('Please choose any drill-down categories from the right-side dropdown to see the grade distribution for any overview category of the first dropdown',
+            style={'textAlign': 'center'}),
+    html.H3('Please select/unselect a "Legend" of the graph from the right side of the graph to select the categories to display.',
+            style={'textAlign': 'center', 'color': 'red'}),
+    html.H3('Double-click on the "Graph Legend" displayed on the right of the graph to isolate the trace.',
+            style={'textAlign': 'center', 'color': 'blue'}),
+    html.H3('Use the zoom-in by selecting a portion of any graph and zoom-out by double-clicking on the graph.',
+            style={'textAlign': 'center', 'color': 'green'}),
 
     # Container for dropdowns
     html.Div([
         # Overview Dropdown
         html.Div([
-            html.Label('Overview'),
+            html.Label(
+                'Overview Category "Course" with option to choose other options to filter data.'),
             dcc.Dropdown(
                 id='primary-category-dropdown',
                 options=[
@@ -73,7 +81,8 @@ app.layout = html.Div([
 
         # Drill-down Dropdown
         html.Div([
-            html.Label('Drill-down'),
+            html.Label(
+                'Drill-down Categories (Including Demographics and Timings)'),
             dcc.Dropdown(
                 id='secondary-category-dropdown',
                 clearable=True  # Ensure this dropdown is clearable
@@ -83,6 +92,8 @@ app.layout = html.Div([
 
     dcc.Graph(id='grade-distribution-graph'),
 ])
+
+# Callbacks to make the graphs responsive of the changes in the dropdowns
 
 
 @app.callback(
@@ -108,7 +119,6 @@ def update_graph(primary_selection, secondary_selection):
     color_col = primary_selection if primary_selection in df.columns else None
     facet_row = secondary_selection if secondary_selection and secondary_selection in df.columns and secondary_selection != primary_selection else None
 
-    # Filtering the DataFrame for selected categories (if needed)
     # This step might include filtering or adjusting df based on the selections
     filtered_df = df  # Assuming no additional filtering is required
 
@@ -131,11 +141,11 @@ def update_graph(primary_selection, secondary_selection):
     # Determine dynamic height
     if secondary_selection and primary_selection != secondary_selection:
         unique_values = filtered_df[secondary_selection].nunique()
-        height_per_subplot = 300  # Set minimum height per subplot
+        height_per_subplot = 900  # Set minimum height per subplot
         # Ensure a minimum total height
         total_height = max(unique_values * height_per_subplot, 900)
     else:
-        total_height = 600
+        total_height = 1000
 
     # Generate the figure based on the primary and (optionally) secondary selections
     fig = px.bar(counts, y='Grade', x='percentage', color=color_col,
@@ -147,7 +157,7 @@ def update_graph(primary_selection, secondary_selection):
                  labels={'percentage': 'Percentage of Total'},
                  category_orders={"Grade": [
                      "W", "F", "D-", "D", "D+", "C-", "C", "C+", "B-", "B", "B+", "A-", "A", "A+"]},
-                 # Include percentage, exclude default count display
+                 # Include percentage
                  hover_data={'percentage': True, 'counts': False},
                  text='Count')  # Use hover_text for hover information
 
@@ -156,6 +166,7 @@ def update_graph(primary_selection, secondary_selection):
 
     fig.update_xaxes(matches=None, showticklabels=True)
     return fig
+
 
 # After initializing your Dash app
 if __name__ == '__main__':
