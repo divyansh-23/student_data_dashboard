@@ -16,15 +16,13 @@ df = pd.read_csv(file_path)
 df.dropna(inplace=True)
 
 # Convert Grades to a Numerical Scale
-
-
 def grade_to_number(grade):
     grade_mapping = {
         'A+': 4.33, 'A': 4.00, 'A-': 3.67,
         'B+': 3.33, 'B': 3.00, 'B-': 2.67,
         'C+': 2.33, 'C': 2.00, 'C-': 1.67,
         'D+': 1.33, 'D': 1.00, 'D-': 0.67,
-        'F': 0.00, 'W': -0.3  # Withdrawn grades can be considered as missing data
+        'F': 0.00, 'W': -0.3
     }
     return grade_mapping.get(grade, np.nan)
 
